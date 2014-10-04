@@ -1,0 +1,6 @@
+*.o
+*.elmi
+*.elmo
+*/ElmFiles/*
+*~
+.DS_STORE
