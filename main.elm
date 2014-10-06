@@ -74,14 +74,7 @@ within platform player =
       ((player.x > platform.x - 8)                 && -- we're not to the left
        (player.x < (platform.x + platform.w) + 8)) && -- or to the right
       ((player.y < platform.y + 8)                 && -- or on top
-       (player.y > (platform.y - platform.l) - 8))    -- or below
-       -- Note: this is using 8 as a tolerance because it feels pretty good.
-       --   Feel free to change this.
-
-onTopOf : Platform -> -- The platform we're testing whether our player is on top of
-          Player ->   -- Our glorious hero
-          Bool        -- Whether our glorious hero is on top of the platform
-onTopOf platform player = (player.y = platform.y + 8)
+       (player.y > platform.y))                       -- or below
        -- Note: this is using 8 as a tolerance because it feels pretty good.
        --   Feel free to change this.
 
@@ -102,10 +95,10 @@ stepObj t ({x,y,vx,vy} as obj) =
         , y <- y + (vy * t) }
 
 jump    {y} g h =
-  if (all (not within) g.platforms) && (any onTopOf g.platforms)== 0
+  if (any within g.platforms)
     then { h | vy <- 5 }
     else h
-gravity t   g h = if (all (not within) g.platforms) then { h | vy <- h.vy - t/4 } else h
+gravity t   g h = if not (any within platforms) then { h | vy <- h.vy - t/4 } else h
 physics t   g h = { h | x <- h.x + t*h.vx , y <- max 0 (h.y + t*h.vy) }
 walk    {x} g h = { h | vx <- toFloat x
                   , dir <- if | x < 0     -> "left"
