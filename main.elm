@@ -5,6 +5,8 @@ import Window
 
 -- INPUT:
 
+-- The information we need to represent all relevant user input.
+
 -- {{{
 
 -- +---------------------------+
@@ -25,6 +27,8 @@ input = let delta = lift (\t -> t/20) (fps 60)
 --}}}
 
 -- MODEL:
+
+-- The information we need to represent the entire game.
 
 -- {{{
 
@@ -64,6 +68,8 @@ defaultGame =
 -- }}}
 
 -- UPDATE:
+
+-- How the game steps from one state to another based on user input.
 
 -- {{{
 
@@ -107,5 +113,15 @@ walk    {x} g h = { h | vx <- toFloat x
 
 step (dt, keys) =
   jump keys >> gravity dt >> walk keys >> physics dt
+
+-- }}}
+
+-- VIEW:
+
+-- How the game state is displayed to the user.
+
+-- {{{
+
+-- CODE GOES HERE
 
 -- }}}
