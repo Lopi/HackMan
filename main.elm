@@ -67,13 +67,52 @@ defaultGame =
 
 -- {{{
 
-within : Platform -> Player -> Bool
+within : Platform -> -- The platform we're testing whether our player is within
+         Player ->   -- Our glorious hero
+         Bool        -- Whether our glorious hero is within the platform
 within platform player =
-      ((player.x >= platform.x - 8)                 && -- we're not to the left
-       (player.x <= (platform.x + platform.w) + 8)) && -- or to the right
-      ((player.y <= platform.y + 8)                 && -- or on top
-       (player.y >= (platform.y - platform.l) - 8))    -- or below
+      ((player.x > platform.x - 8)                 && -- we're not to the left
+       (player.x < (platform.x + platform.w) + 8)) && -- or to the right
+      ((player.y < platform.y + 8)                 && -- or on top
+       (player.y > (platform.y - platform.l) - 8))    -- or below
        -- Note: this is using 8 as a tolerance because it feels pretty good.
        --   Feel free to change this.
+
+onTopOf : Platform -> -- The platform we're testing whether our player is on top of
+          Player ->   -- Our glorious hero
+          Bool        -- Whether our glorious hero is on top of the platform
+onTopOf platform player = (player.y = platform.y + 8)
+       -- Note: this is using 8 as a tolerance because it feels pretty good.
+       --   Feel free to change this.
+
+stepV : Float -> -- Our velocity vector
+        Bool ->  -- Whether there is an lower-bound collision
+        Bool ->  -- Whether there is an upper-bound collision
+        Float    -- New velocity vector
+stepV v lowerCollision upperCollision =
+  if | lowerCollision -> abs v
+     | upperCollision -> 0 - (abs v)
+     | otherwise      -> v
+
+stepObj : Time ->
+          Object a -> -- Original object
+          Object a    -- Object after time
+stepObj t ({x,y,vx,vy} as obj) =
+  { obj | x <- x + (vx * t)
+        , y <- y + (vy * t) }
+
+jump    {y} g h =
+  if (all (not within) g.platforms) && (any onTopOf g.platforms)== 0
+    then { h | vy <- 5 }
+    else h
+gravity t   g h = if (all (not within) g.platforms) then { h | vy <- h.vy - t/4 } else h
+physics t   g h = { h | x <- h.x + t*h.vx , y <- max 0 (h.y + t*h.vy) }
+walk    {x} g h = { h | vx <- toFloat x
+                  , dir <- if | x < 0     -> "left"
+                              | x > 0     -> "right"
+                              | otherwise -> m.dir }
+
+step (dt, keys) =
+  jump keys >> gravity dt >> walk keys >> physics dt
 
 -- }}}
