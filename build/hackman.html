@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="UTF-8"><title>hackman</title><script type="text/javascript" src="/usr/local/share/elm/compiler/elm-runtime.js"></script><script type="text/javascript">Elm.Hackman = Elm.Hackman || {};
+Elm.Hackman.make = function (_elm) {
+   "use strict";
+   _elm.Hackman = _elm.Hackman || {};
+   if (_elm.Hackman.values)
+   return _elm.Hackman.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   _A = _N.Array.make(_elm),
+   _E = _N.Error.make(_elm),
+   $moduleName = "Hackman",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Time = Elm.Time.make(_elm);
+   var walk = F3(function (_v0,
+   g,
+   h) {
+      return function () {
+         return _U.replace([["vx"
+                            ,$Basics.toFloat(_v0.x)]
+                           ,["dir"
+                            ,_U.cmp(_v0.x,
+                            0) < 0 ? "left" : _U.cmp(_v0.x,
+                            0) > 0 ? "right" : h.dir]],
+         h);
+      }();
+   });
+   var physics = F3(function (t,
+   g,
+   h) {
+      return _U.replace([["x"
+                         ,h.x + t * h.vx]
+                        ,["y"
+                         ,A2($Basics.max,
+                         0,
+                         h.y + t * h.vy)]],
+      h);
+   });
+   var stepObj = F2(function (t,
+   _v2) {
+      return function () {
+         return _U.replace([["x"
+                            ,_v2.x + _v2.vx * t]
+                           ,["y",_v2.y + _v2.vy * t]],
+         _v2);
+      }();
+   });
+   var stepV = F3(function (v,
+   lowerCollision,
+   upperCollision) {
+      return lowerCollision ? $Basics.abs(v) : upperCollision ? 0 - $Basics.abs(v) : v;
+   });
+   var within = F2(function (player,
+   platform) {
+      return _U.cmp(player.x,
+      platform.x - 8) > 0 && _U.cmp(player.x,
+      platform.x + platform.w + 8) < 0 && (_U.cmp(player.y,
+      platform.y + 8) < 0 && _U.cmp(player.y,
+      platform.y) > 0);
+   });
+   var jump = F3(function (_v4,
+   g,
+   h) {
+      return function () {
+         return A2($List.any,
+         within(h),
+         g.platforms) ? _U.replace([["vy"
+                                    ,5]],
+         h) : h;
+      }();
+   });
+   var gravity = F3(function (t,
+   g,
+   h) {
+      return $Basics.not(A2($List.any,
+      within(h),
+      g.platforms)) ? _U.replace([["vy"
+                                  ,h.vy - t / 4]],
+      h) : h;
+   });
+   var Game = F3(function (a,b,c) {
+      return {_: {}
+             ,platforms: c
+             ,player: b
+             ,state: a};
+   });
+   var Win = {ctor: "Win"};
+   var Pause = {ctor: "Pause"};
+   var defaultGame = {_: {}
+                     ,platforms: _L.fromArray([])
+                     ,player: {_: {}
+                              ,vx: 0
+                              ,vy: 0
+                              ,x: 0
+                              ,y: 0}
+                     ,state: Pause};
+   var Play = {ctor: "Play"};
+   var Rectangle = F5(function (a,
+   b,
+   c,
+   d,
+   e) {
+      return _U.insert("l",
+      d,
+      _U.insert("w",
+      c,
+      _U.insert("y",
+      b,
+      _U.insert("x",a,e))));
+   });
+   var Object = F5(function (a,
+   b,
+   c,
+   d,
+   e) {
+      return _U.insert("vy",
+      d,
+      _U.insert("vx",
+      c,
+      _U.insert("y",
+      b,
+      _U.insert("x",a,e))));
+   });
+   _elm.Hackman.values = {_op: _op
+                         ,Object: Object
+                         ,Rectangle: Rectangle
+                         ,Play: Play
+                         ,Pause: Pause
+                         ,Win: Win
+                         ,Game: Game
+                         ,defaultGame: defaultGame
+                         ,within: within
+                         ,stepV: stepV
+                         ,stepObj: stepObj
+                         ,jump: jump
+                         ,gravity: gravity
+                         ,physics: physics
+                         ,walk: walk};
+   return _elm.Hackman.values;
+};</script></head><body><script type="text/javascript">Elm.fullscreen(Elm.Hackman)</script><noscript></noscript></body></html>
