@@ -5,4 +5,4 @@ The idea is to create a game to teach users about security and penetration testi
 
 Forks
 ======
-[japesinator's](github.com/japesinator/HackMan)
+[japesinator's](https://github.com/japesinator/HackMan)
