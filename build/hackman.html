@@ -19,16 +19,6 @@ Elm.Hackman.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Text = Elm.Text.make(_elm),
    $Time = Elm.Time.make(_elm);
-   var displayObj = F2(function (obj,
-   shape) {
-      return A2($Graphics$Collage.move,
-      {ctor: "_Tuple2"
-      ,_0: obj.x
-      ,_1: obj.y},
-      A2($Graphics$Collage.filled,
-      $Color.white,
-      shape));
-   });
    var textBlue = A3($Color.rgb,
    41,
    128,
@@ -38,49 +28,65 @@ Elm.Hackman.make = function (_elm) {
          return $Text.leftAligned(f($Text.monospace($Text.color(textBlue)($Text.toText($)))));
       };
    };
-   var platFormGrey = A3($Color.rgb,
+   var platformGrey = A3($Color.rgb,
    44,
    62,
    80);
+   var displayPlatform = function (_v0) {
+      return function () {
+         return A2($Graphics$Collage.move,
+         {ctor: "_Tuple2"
+         ,_0: _v0.x
+         ,_1: _v0.y},
+         A2($Graphics$Collage.filled,
+         platformGrey,
+         A2($Graphics$Collage.rect,
+         _v0.w,
+         _v0.l)));
+      }();
+   };
    var backgroundGrey = A3($Color.rgb,
    149,
    165,
    166);
-   var display = F2(function (_v0,
-   _v1) {
+   var display = F2(function (_v2,
+   _v3) {
       return function () {
          return function () {
-            switch (_v0.ctor)
+            switch (_v2.ctor)
             {case "_Tuple2":
                return A3($Graphics$Element.container,
-                 _v0._0,
-                 _v0._1,
+                 _v2._0,
+                 _v2._1,
                  $Graphics$Element.middle)(A3($Graphics$Collage.collage,
                  600,
                  400,
-                 _L.fromArray([A2($Graphics$Collage.filled,
-                              backgroundGrey,
-                              A2($Graphics$Collage.rect,
-                              600,
-                              400))
-                              ,$Graphics$Collage.toForm(A3($Graphics$Element.image,
-                              10,
-                              10,
-                              "/img/Player/standing.png"))])));}
+                 _L.append(_L.fromArray([A2($Graphics$Collage.filled,
+                                        backgroundGrey,
+                                        A2($Graphics$Collage.rect,
+                                        600,
+                                        400))
+                                        ,$Graphics$Collage.toForm(A3($Graphics$Element.image,
+                                        10,
+                                        10,
+                                        "/img/Player/standing.png"))]),
+                 A2($List.map,
+                 displayPlatform,
+                 _v3.platforms))));}
             _E.Case($moduleName,
-            "between lines 132 and 136");
+            "between lines 134 and 139");
          }();
       }();
    });
-   var walk = F3(function (_v6,
+   var walk = F3(function (_v8,
    g,
    h) {
       return function () {
          return _U.replace([["vx"
-                            ,$Basics.toFloat(_v6.x)]
+                            ,$Basics.toFloat(_v8.x)]
                            ,["dir"
-                            ,_U.cmp(_v6.x,
-                            0) < 0 ? "left" : _U.cmp(_v6.x,
+                            ,_U.cmp(_v8.x,
+                            0) < 0 ? "left" : _U.cmp(_v8.x,
                             0) > 0 ? "right" : h.dir]],
          h);
       }();
@@ -97,12 +103,12 @@ Elm.Hackman.make = function (_elm) {
       h);
    });
    var stepObj = F2(function (t,
-   _v8) {
+   _v10) {
       return function () {
          return _U.replace([["x"
-                            ,_v8.x + _v8.vx * t]
-                           ,["y",_v8.y + _v8.vy * t]],
-         _v8);
+                            ,_v10.x + _v10.vx * t]
+                           ,["y",_v10.y + _v10.vy * t]],
+         _v10);
       }();
    });
    var stepV = F3(function (v,
@@ -118,7 +124,7 @@ Elm.Hackman.make = function (_elm) {
       platform.y + 8) < 0 && _U.cmp(player.y,
       platform.y) > 0);
    });
-   var jump = F3(function (_v10,
+   var jump = F3(function (_v12,
    g,
    h) {
       return function () {
@@ -197,10 +203,10 @@ Elm.Hackman.make = function (_elm) {
                          ,physics: physics
                          ,walk: walk
                          ,backgroundGrey: backgroundGrey
-                         ,platFormGrey: platFormGrey
+                         ,platformGrey: platformGrey
                          ,textBlue: textBlue
                          ,txt: txt
-                         ,displayObj: displayObj
+                         ,displayPlatform: displayPlatform
                          ,display: display};
    return _elm.Hackman.values;
 };</script></head><body><script type="text/javascript">Elm.fullscreen(Elm.Hackman)</script><noscript></noscript></body></html>

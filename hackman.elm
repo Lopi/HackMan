@@ -117,16 +117,15 @@ walk    {x} g h = { h | vx <- toFloat x
 -- Useful Colors
 --                   R   G   B
 backgroundGrey = rgb 149 165 166
-platFormGrey   = rgb 44  62  80
+platformGrey   = rgb 44  62  80
 textBlue       = rgb 41  128 185
 
 -- Formats text to look pretty
 txt f = leftAligned << f << monospace << Text.color textBlue << toText
 
--- Elm's Object/Shape/Form types are weird
-displayObj : Object a -> Shape -> Form
-displayObj obj shape =
-      move (obj.x,obj.y) (filled white shape)
+displayPlatform : Platform ->
+                  Form
+displayPlatform {x,y,w,l} = move (x, y) (filled platformGrey (rect w l))
 
 -- Where the magic happens
 display : (Int, Int) ->
@@ -134,8 +133,9 @@ display : (Int, Int) ->
           Element
 display (w,h) {state, player, platforms} = container w h middle <|
   collage 600 400
-  [ filled backgroundGrey (rect 600 400)
-  , toForm (image 10 10 "/img/Player/standing.png")
-  ]
+  ([ filled backgroundGrey (rect 600 400)
+   , toForm (image 10 10 "/img/Player/standing.png")
+   ]
+  ++ (map displayPlatform platforms))
 
 -- }}}
