@@ -13,17 +13,74 @@ Elm.Hackman.make = function (_elm) {
    _E = _N.Error.make(_elm),
    $moduleName = "Hackman",
    $Basics = Elm.Basics.make(_elm),
+   $Color = Elm.Color.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
    $List = Elm.List.make(_elm),
+   $Text = Elm.Text.make(_elm),
    $Time = Elm.Time.make(_elm);
-   var walk = F3(function (_v0,
+   var displayObj = F2(function (obj,
+   shape) {
+      return A2($Graphics$Collage.move,
+      {ctor: "_Tuple2"
+      ,_0: obj.x
+      ,_1: obj.y},
+      A2($Graphics$Collage.filled,
+      $Color.white,
+      shape));
+   });
+   var textBlue = A3($Color.rgb,
+   41,
+   128,
+   185);
+   var txt = function (f) {
+      return function ($) {
+         return $Text.leftAligned(f($Text.monospace($Text.color(textBlue)($Text.toText($)))));
+      };
+   };
+   var platFormGrey = A3($Color.rgb,
+   44,
+   62,
+   80);
+   var backgroundGrey = A3($Color.rgb,
+   149,
+   165,
+   166);
+   var display = F2(function (_v0,
+   _v1) {
+      return function () {
+         return function () {
+            switch (_v0.ctor)
+            {case "_Tuple2":
+               return A3($Graphics$Element.container,
+                 _v0._0,
+                 _v0._1,
+                 $Graphics$Element.middle)(A3($Graphics$Collage.collage,
+                 600,
+                 400,
+                 _L.fromArray([A2($Graphics$Collage.filled,
+                              backgroundGrey,
+                              A2($Graphics$Collage.rect,
+                              600,
+                              400))
+                              ,$Graphics$Collage.toForm(A3($Graphics$Element.image,
+                              10,
+                              10,
+                              "/img/Player/standing.png"))])));}
+            _E.Case($moduleName,
+            "between lines 132 and 136");
+         }();
+      }();
+   });
+   var walk = F3(function (_v6,
    g,
    h) {
       return function () {
          return _U.replace([["vx"
-                            ,$Basics.toFloat(_v0.x)]
+                            ,$Basics.toFloat(_v6.x)]
                            ,["dir"
-                            ,_U.cmp(_v0.x,
-                            0) < 0 ? "left" : _U.cmp(_v0.x,
+                            ,_U.cmp(_v6.x,
+                            0) < 0 ? "left" : _U.cmp(_v6.x,
                             0) > 0 ? "right" : h.dir]],
          h);
       }();
@@ -40,12 +97,12 @@ Elm.Hackman.make = function (_elm) {
       h);
    });
    var stepObj = F2(function (t,
-   _v2) {
+   _v8) {
       return function () {
          return _U.replace([["x"
-                            ,_v2.x + _v2.vx * t]
-                           ,["y",_v2.y + _v2.vy * t]],
-         _v2);
+                            ,_v8.x + _v8.vx * t]
+                           ,["y",_v8.y + _v8.vy * t]],
+         _v8);
       }();
    });
    var stepV = F3(function (v,
@@ -61,7 +118,7 @@ Elm.Hackman.make = function (_elm) {
       platform.y + 8) < 0 && _U.cmp(player.y,
       platform.y) > 0);
    });
-   var jump = F3(function (_v4,
+   var jump = F3(function (_v10,
    g,
    h) {
       return function () {
@@ -138,6 +195,12 @@ Elm.Hackman.make = function (_elm) {
                          ,jump: jump
                          ,gravity: gravity
                          ,physics: physics
-                         ,walk: walk};
+                         ,walk: walk
+                         ,backgroundGrey: backgroundGrey
+                         ,platFormGrey: platFormGrey
+                         ,textBlue: textBlue
+                         ,txt: txt
+                         ,displayObj: displayObj
+                         ,display: display};
    return _elm.Hackman.values;
 };</script></head><body><script type="text/javascript">Elm.fullscreen(Elm.Hackman)</script><noscript></noscript></body></html>
