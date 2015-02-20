@@ -2,6 +2,8 @@ module Hackman where
 
 import Keyboard
 import Window
+import Debug
+import Text
 
 -- INPUT:
 
@@ -20,10 +22,6 @@ import Window
 -- | s       | down (Not used) |
 -- +---------+-----------------+
 
-input : Signal Input
-input = let delta = lift (\t -> t/20) (fps 60)
-                    in sampleOn delta (lift2 (,) delta (Keyboard.directions 32 83 65 68))
-
 --}}}
 
 -- MODEL:
@@ -32,18 +30,15 @@ input = let delta = lift (\t -> t/20) (fps 60)
 
 -- {{{
 
-(gameWidth,gameHeight) : (Int, Int)
-(gameWidth,gameHeight) = Window.dimensions
-
 type Object a       = { a | x:Float    -- x coordinate
                           , y:Float    -- y coordinate
                           , vx:Float   -- x velocity
                           , vy:Float } -- y velocity
 
-type Rectangle         = { x:Float   -- top left corner x coordinate
-                         , y:Float   -- top left corner y coordinate
-                         , w:Float   -- width
-                         , l:Float } -- length
+type Rectangle a       = { a | x:Float   -- top left corner x coordinate
+                             , y:Float   -- top left corner y coordinate
+                             , w:Float   -- width
+                             , l:Float } -- length
 
 type Player = Object {}
 
@@ -73,10 +68,10 @@ defaultGame =
 
 -- {{{
 
-within : Platform -> -- The platform we're testing whether our player is within
-         Player ->   -- Our glorious hero
+within : Player ->   -- The platform we're testing whether our player is within
+         Platform -> -- Our glorious hero
          Bool        -- Whether our glorious hero is within the platform
-within platform player =
+within player platform =
       ((player.x > platform.x - 8)                 && -- we're not to the left
        (player.x < (platform.x + platform.w) + 8)) && -- or to the right
       ((player.y < platform.y + 8)                 && -- or on top
@@ -101,18 +96,15 @@ stepObj t ({x,y,vx,vy} as obj) =
         , y <- y + (vy * t) }
 
 jump    {y} g h =
-  if (any within g.platforms)
+  if (any (within h) g.platforms)
     then { h | vy <- 5 }
     else h
-gravity t   g h = if not (any within platforms) then { h | vy <- h.vy - t/4 } else h
+gravity t   g h = if not (any (within h) g.platforms) then { h | vy <- h.vy - t/4 } else h
 physics t   g h = { h | x <- h.x + t*h.vx , y <- max 0 (h.y + t*h.vy) }
 walk    {x} g h = { h | vx <- toFloat x
                   , dir <- if | x < 0     -> "left"
                               | x > 0     -> "right"
-                              | otherwise -> m.dir }
-
-step (dt, keys) =
-  jump keys >> gravity dt >> walk keys >> physics dt
+                              | otherwise -> h.dir }
 
 -- }}}
 
@@ -122,6 +114,28 @@ step (dt, keys) =
 
 -- {{{
 
--- CODE GOES HERE
+-- Useful Colors
+--                   R   G   B
+backgroundGrey = rgb 149 165 166
+platformGrey   = rgb 44  62  80
+textBlue       = rgb 41  128 185
+
+-- Formats text to look pretty
+txt f = leftAligned << f << monospace << Text.color textBlue << toText
+
+displayPlatform : Platform ->
+                  Form
+displayPlatform {x,y,w,l} = move (x, y) (filled platformGrey (rect w l))
+
+-- Where the magic happens
+display : (Int, Int) ->
+          Game ->
+          Element
+display (w,h) {state, player, platforms} = container w h middle <|
+  collage 600 400
+  ([ filled backgroundGrey (rect 600 400)
+   , toForm (image 10 10 "/img/Player/standing.png")
+   ]
+  ++ (map displayPlatform platforms))
 
 -- }}}

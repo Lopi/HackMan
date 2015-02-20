@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="UTF-8"><title>hackman</title><script type="text/javascript" src="/usr/local/share/elm/compiler/elm-runtime.js"></script><script type="text/javascript">Elm.Hackman = Elm.Hackman || {};
+Elm.Hackman.make = function (_elm) {
+   "use strict";
+   _elm.Hackman = _elm.Hackman || {};
+   if (_elm.Hackman.values)
+   return _elm.Hackman.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   _A = _N.Array.make(_elm),
+   _E = _N.Error.make(_elm),
+   $moduleName = "Hackman",
+   $Basics = Elm.Basics.make(_elm),
+   $Color = Elm.Color.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Text = Elm.Text.make(_elm),
+   $Time = Elm.Time.make(_elm);
+   var textBlue = A3($Color.rgb,
+   41,
+   128,
+   185);
+   var txt = function (f) {
+      return function ($) {
+         return $Text.leftAligned(f($Text.monospace($Text.color(textBlue)($Text.toText($)))));
+      };
+   };
+   var platformGrey = A3($Color.rgb,
+   44,
+   62,
+   80);
+   var displayPlatform = function (_v0) {
+      return function () {
+         return A2($Graphics$Collage.move,
+         {ctor: "_Tuple2"
+         ,_0: _v0.x
+         ,_1: _v0.y},
+         A2($Graphics$Collage.filled,
+         platformGrey,
+         A2($Graphics$Collage.rect,
+         _v0.w,
+         _v0.l)));
+      }();
+   };
+   var backgroundGrey = A3($Color.rgb,
+   149,
+   165,
+   166);
+   var display = F2(function (_v2,
+   _v3) {
+      return function () {
+         return function () {
+            switch (_v2.ctor)
+            {case "_Tuple2":
+               return A3($Graphics$Element.container,
+                 _v2._0,
+                 _v2._1,
+                 $Graphics$Element.middle)(A3($Graphics$Collage.collage,
+                 600,
+                 400,
+                 _L.append(_L.fromArray([A2($Graphics$Collage.filled,
+                                        backgroundGrey,
+                                        A2($Graphics$Collage.rect,
+                                        600,
+                                        400))
+                                        ,$Graphics$Collage.toForm(A3($Graphics$Element.image,
+                                        10,
+                                        10,
+                                        "/img/Player/standing.png"))]),
+                 A2($List.map,
+                 displayPlatform,
+                 _v3.platforms))));}
+            _E.Case($moduleName,
+            "between lines 134 and 139");
+         }();
+      }();
+   });
+   var walk = F3(function (_v8,
+   g,
+   h) {
+      return function () {
+         return _U.replace([["vx"
+                            ,$Basics.toFloat(_v8.x)]
+                           ,["dir"
+                            ,_U.cmp(_v8.x,
+                            0) < 0 ? "left" : _U.cmp(_v8.x,
+                            0) > 0 ? "right" : h.dir]],
+         h);
+      }();
+   });
+   var physics = F3(function (t,
+   g,
+   h) {
+      return _U.replace([["x"
+                         ,h.x + t * h.vx]
+                        ,["y"
+                         ,A2($Basics.max,
+                         0,
+                         h.y + t * h.vy)]],
+      h);
+   });
+   var stepObj = F2(function (t,
+   _v10) {
+      return function () {
+         return _U.replace([["x"
+                            ,_v10.x + _v10.vx * t]
+                           ,["y",_v10.y + _v10.vy * t]],
+         _v10);
+      }();
+   });
+   var stepV = F3(function (v,
+   lowerCollision,
+   upperCollision) {
+      return lowerCollision ? $Basics.abs(v) : upperCollision ? 0 - $Basics.abs(v) : v;
+   });
+   var within = F2(function (player,
+   platform) {
+      return _U.cmp(player.x,
+      platform.x - 8) > 0 && _U.cmp(player.x,
+      platform.x + platform.w + 8) < 0 && (_U.cmp(player.y,
+      platform.y + 8) < 0 && _U.cmp(player.y,
+      platform.y) > 0);
+   });
+   var jump = F3(function (_v12,
+   g,
+   h) {
+      return function () {
+         return A2($List.any,
+         within(h),
+         g.platforms) ? _U.replace([["vy"
+                                    ,5]],
+         h) : h;
+      }();
+   });
+   var gravity = F3(function (t,
+   g,
+   h) {
+      return $Basics.not(A2($List.any,
+      within(h),
+      g.platforms)) ? _U.replace([["vy"
+                                  ,h.vy - t / 4]],
+      h) : h;
+   });
+   var Game = F3(function (a,b,c) {
+      return {_: {}
+             ,platforms: c
+             ,player: b
+             ,state: a};
+   });
+   var Win = {ctor: "Win"};
+   var Pause = {ctor: "Pause"};
+   var defaultGame = {_: {}
+                     ,platforms: _L.fromArray([])
+                     ,player: {_: {}
+                              ,vx: 0
+                              ,vy: 0
+                              ,x: 0
+                              ,y: 0}
+                     ,state: Pause};
+   var Play = {ctor: "Play"};
+   var Rectangle = F5(function (a,
+   b,
+   c,
+   d,
+   e) {
+      return _U.insert("l",
+      d,
+      _U.insert("w",
+      c,
+      _U.insert("y",
+      b,
+      _U.insert("x",a,e))));
+   });
+   var Object = F5(function (a,
+   b,
+   c,
+   d,
+   e) {
+      return _U.insert("vy",
+      d,
+      _U.insert("vx",
+      c,
+      _U.insert("y",
+      b,
+      _U.insert("x",a,e))));
+   });
+   _elm.Hackman.values = {_op: _op
+                         ,Object: Object
+                         ,Rectangle: Rectangle
+                         ,Play: Play
+                         ,Pause: Pause
+                         ,Win: Win
+                         ,Game: Game
+                         ,defaultGame: defaultGame
+                         ,within: within
+                         ,stepV: stepV
+                         ,stepObj: stepObj
+                         ,jump: jump
+                         ,gravity: gravity
+                         ,physics: physics
+                         ,walk: walk
+                         ,backgroundGrey: backgroundGrey
+                         ,platformGrey: platformGrey
+                         ,textBlue: textBlue
+                         ,txt: txt
+                         ,displayPlatform: displayPlatform
+                         ,display: display};
+   return _elm.Hackman.values;
+};</script></head><body><script type="text/javascript">Elm.fullscreen(Elm.Hackman)</script><noscript></noscript></body></html>
